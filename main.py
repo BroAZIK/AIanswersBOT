@@ -20,7 +20,7 @@ dispatcher = updater.dispatcher
 
 def register_handlers():
     
-    dispatcher.add_handler(CallbackQueryHandler(button_callbacks))
+    dispatcher.add_handler(CallbackQueryHandler(button_callbacks)),
     dispatcher.add_handler(CommandHandler("start", start)),
     dispatcher.add_handler(MessageHandler(Filters.update.channel_posts, ignore_channel_posts)),
     dispatcher.add_handler(MessageHandler(Filters.text, text)),

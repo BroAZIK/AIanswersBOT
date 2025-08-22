@@ -1,10 +1,11 @@
-from telegram import Update, Bot, ParseMode, InlineKeyboardMarkup
+from telegram import Update, Bot, InlineKeyboardMarkup
+from telegram.constants import ParseMode
 from telegram.ext import (
     Updater,
     CommandHandler,
     MessageHandler,
-    Filters,
     CallbackQueryHandler,
+    ContextTypes
     
     
 )
@@ -17,17 +18,24 @@ from pprint import pprint
 bot = Bot(token="8473456433:AAFu9z8ZNi4fWfoBpo78STSiGbvahRQ8SCw")
 
 
-def log_saver(user_id, full_name,  text, rassm=None):
+async def log_saver(user_id, full_name,  text, answer, rassm=None):
     if rassm != None:
-        bot.send_photo(chat_id=CHANNEL_ID, photo=rassm, caption=f"{text}\n\n <a href='tg://user?id={user_id}'>{full_name}</a> tomonidan yuborildi", parse_mode=ParseMode.HTML)
+        try:
+            await bot.send_photo(chat_id=CHANNEL_ID, photo=rassm, caption=f"<a href='tg://user?id={user_id}'>{full_name}</a>:\n{text}\n\n{answer}", parse_mode=ParseMode.HTML)
+            insert(table="question", data={"user_id": user_id,"savol": text, "full_name": full_name, "photo": rassm})
+        except:
+            await bot.send_photo(chat_id=CHANNEL_ID, photo=rassm, caption=f"<a href='tg://user?id={user_id}'>{full_name}</a>:\n{text}\n\nJavob berildi !", parse_mode=ParseMode.HTML)
+            insert(table="question", data={"user_id": user_id,"savol": text, "full_name": full_name, "photo": rassm})
+    else:
+        try:
+            await bot.send_message(chat_id=CHANNEL_ID, text=f"\n<a href='tg://user?id={user_id}'>{full_name}</a>:\n{text}\n\n{answer}", parse_mode=ParseMode.HTML)
+        except:
+            await bot.send_message(chat_id=CHANNEL_ID, text=f"\n<a href='tg://user?id={user_id}'>{full_name}</a>:\n{text}\n\nJavob berildi  !", parse_mode=ParseMode.HTML)
         insert(table="question", data={"user_id": user_id,"savol": text, "full_name": full_name, "photo": rassm})
 
-    else:
-        bot.send_message(chat_id=CHANNEL_ID, text=f"{text}\n\n <a href='tg://user?id={user_id}'>{full_name}</a> tomonidan yuborildi", parse_mode=ParseMode.HTML)
-        insert(table="question", data={"user_id": user_id,"savol": text, "full_name": full_name, "photo": rassm})
     print("loglar muammosiz jo'natildi")
 
-def start(update: Update, context):
+async def start(update: Update, context):
     user_id = update.message.chat_id
     full_name = update.effective_chat.full_name
     
@@ -36,29 +44,29 @@ def start(update: Update, context):
             "mode": "medium"
         })
 
-    update.message.reply_text(
+    await update.message.reply_text(
         text=start_message
     )
 
     mode = get(table="users", user_id=user_id)['mode']
     
     if mode == "short":
-        update.message.reply_text(
+        await update.message.reply_text(
         text=choice_mode_text,
         reply_markup=InlineKeyboardMarkup(short_but)
         )
     if mode == "complete":
-        update.message.reply_text(
+        await update.message.reply_text(
         text=choice_mode_text,
         reply_markup=InlineKeyboardMarkup(complete_but)
         )    
     
     if mode == "medium":
-        update.message.reply_text(
+        await update.message.reply_text(
         text=choice_mode_text,
         reply_markup=InlineKeyboardMarkup(medium_but)
         )
-def text(update: Update, context):
+async def text(update: Update, context):
 
     user_id = update.message.chat_id
     xabar = update.message.text
@@ -67,53 +75,53 @@ def text(update: Update, context):
     print("text ishlavotti")
 
     ai_text = ai_request(text=f"user.{user_id} | {xabar} | mode.{mode}")
-    log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=xabar, rassm=None)
+    await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=xabar, answer=ai_text, rassm=None)
 
 
     if mode == "short":
-        update.message.reply_text(
+        await update.message.reply_text(
             text=ai_text,
             reply_markup=InlineKeyboardMarkup(short_but)
         )
     if mode == "medium":
-        update.message.reply_text(
+        await update.message.reply_text(
             text=ai_text,
             reply_markup=InlineKeyboardMarkup(medium_but)
         )
     if mode == "complete":
-        update.message.reply_text(
+        await update.message.reply_text(
             text=ai_text,
             reply_markup=InlineKeyboardMarkup(complete_but)
         )
 
-def button_callbacks(update: Update, context):
-    print(0)
+async def button_callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    
     query = update.callback_query
     user_id = query.from_user.id
     # pprint(query.to_dict())
     mode = get(table="users", user_id=user_id)['mode']
-    print(1)
+    
     if query.data != mode:
-        print(2)
         if query.data == "short":
-            print(3)
             upd(table="users", user_id=user_id, data={"mode": "short"})
-            query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(short_but))
-        if query.data == "medium":
+            await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(short_but))
+
+        elif query.data == "medium":
             upd(table="users", user_id=user_id, data={"mode": "medium"})
-            query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(medium_but))
-        if query.data == "complete":
+            await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(medium_but))
+
+        elif query.data == "complete":
             upd(table="users", user_id=user_id, data={"mode": "complete"})
-            query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(complete_but))
+            await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(complete_but))
 
-        query.answer("✅Rejim o'zgardi", show_alert=True)
+        await query.answer("✅ Rejim o'zgardi", show_alert=True)
     else:
-        print(4)
-        query.answer("Boshqa rejimni tanlang❗️", show_alert=False)
+        await query.answer("Boshqa rejimni tanlang❗️", show_alert=False)
 
-def photo(update: Update, context):
+async def photo(update: Update, context):
+
     rasm = update.message.photo[-1].file_id
-    tg_file = context.bot.get_file(rasm)
+    tg_file = await context.bot.get_file(rasm)
     file_path = tg_file.file_path
     user_id = update.effective_chat.id
     mode = get(table="users", user_id=user_id)['mode']
@@ -122,24 +130,25 @@ def photo(update: Update, context):
     ocr_text = OCRres(file_path)
     print("OCR dan xabar keldi")
 
-    log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=ocr_text, rassm=rasm)
+    
 
     ai_text = ai_request(text=f"user.{user_id} | {ocr_text} | mode.{mode}")
+    await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=ocr_text, answer=ai_text,rassm=rasm)
     print("ai dan xabar keldi")
 
 
     if mode == "short":
-        update.message.reply_text(
+        await update.message.reply_text(
             text=ai_text,
             reply_markup=InlineKeyboardMarkup(short_but)
         )
     if mode == "medium":
-        update.message.reply_text(
+        await update.message.reply_text(
             text=ai_text,
             reply_markup=InlineKeyboardMarkup(medium_but)
         )
     if mode == "complete":
-        update.message.reply_text(
+        await update.message.reply_text(
             text=ai_text,
             reply_markup=InlineKeyboardMarkup(complete_but)
         )

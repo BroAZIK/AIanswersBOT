@@ -6,6 +6,7 @@ from openai import OpenAI
 ocr_key = "K83430220988957"
 endpoint = "https://models.github.ai/inference"
 model = "openai/gpt-4.1"
+token = "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"
 
 client = OpenAI(
     base_url=endpoint,
