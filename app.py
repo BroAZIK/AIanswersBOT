@@ -16,32 +16,33 @@ from details.handlers import button_callbacks, start, ignore_channel_posts, text
 
 flask_app = Flask(__name__)
 
+bot_app = Application.builder().token(TOKEN).build()
 
-app = Application.builder().token(TOKEN).build()
-
-
-app.add_handler(CallbackQueryHandler(button_callbacks))
-app.add_handler(CommandHandler("start", start))
-app.add_handler(CommandHandler("about", stats))
-app.add_handler(MessageHandler(filters.UpdateType.CHANNEL_POST, ignore_channel_posts))
-app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text))
-app.add_handler(MessageHandler(filters.PHOTO, photo))
+bot_app.add_handler(CallbackQueryHandler(button_callbacks))
+bot_app.add_handler(CommandHandler("start", start))
+bot_app.add_handler(CommandHandler("about", stats))
+bot_app.add_handler(MessageHandler(filters.UpdateType.CHANNEL_POST, ignore_channel_posts))
+bot_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text))
+bot_app.add_handler(MessageHandler(filters.PHOTO, photo))
 
 
 @flask_app.route(f"/webhook/{TOKEN}", methods=["POST"])
 def webhook():
-    update = Update.de_json(request.get_json(force=True), app.bot)
-    asyncio.get_event_loop().create_task(app.process_update(update))
+    update = Update.de_json(request.get_json(force=True), bot_app.bot)
+    asyncio.get_event_loop().create_task(bot_app.process_update(update))
     return "ok", 200
 
-@flask_app.route(f"/webhook/", methods=["GET"])
+@flask_app.route("/webhook/", methods=["GET"])
 def stage():
     return "Webhook is running...!"
 
+
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.create_task(app.initialize())
-    loop.create_task(app.start())
+    loop.create_task(bot_app.initialize())
+    loop.create_task(bot_app.start())
 
     print("Webhook server ishlayapti 🚀")
     flask_app.run(host="0.0.0.0", port=5000, debug=True)
+
+application = flask_app
