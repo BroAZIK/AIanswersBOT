@@ -16,8 +16,10 @@ from details.handlers import button_callbacks, start, ignore_channel_posts, text
 
 flask_app = Flask(__name__)
 
+# Telegram bot ilovasini yaratamiz
 bot_app = Application.builder().token(TOKEN).build()
 
+# Handlerlarni qo‘shamiz
 bot_app.add_handler(CallbackQueryHandler(button_callbacks))
 bot_app.add_handler(CommandHandler("start", start))
 bot_app.add_handler(CommandHandler("about", stats))
@@ -37,13 +39,16 @@ def webhook():
             return "No JSON received", 400
 
         update = Update.de_json(data, bot_app.bot)
-        asyncio.get_event_loop().create_task(bot_app.process_update(update))
+
+        # Flask sync bo‘lgani uchun asyncio.run ishlatamiz
+        asyncio.run(bot_app.process_update(update))
+
         return "ok", 200
+
     except Exception as e:
         import traceback
         print("Webhook error:", traceback.format_exc())
         return "Internal Server Error", 500
-
 
 
 @flask_app.route("/webhook/", methods=["GET"])
@@ -52,11 +57,13 @@ def stage():
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.create_task(bot_app.initialize())
-    loop.create_task(bot_app.start())
+    # Botni initialize qilamiz
+    asyncio.run(bot_app.initialize())
+    asyncio.run(bot_app.start())
 
     print("Webhook server ishlayapti 🚀")
     flask_app.run(host="0.0.0.0", port=5000, debug=True)
 
+
+# Gunicorn uchun
 application = flask_app
