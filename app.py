@@ -99,6 +99,7 @@ def webhook():
         return "Error", 500
 
 # Webhook ni o'rnatish
+# Webhook ni o'rnatish
 @flask_app.route('/set_webhook', methods=['GET'])
 def set_webhook():
     try:
@@ -107,22 +108,42 @@ def set_webhook():
             
         webhook_url = f"https://iqmatebot.pythonanywhere.com/webhook"
         
+        # Webhook parametrlari
         success = run_async(bot.set_webhook(
-            webhook_url,
+            url=webhook_url,
             allowed_updates=['message', 'callback_query', 'channel_post'],
-            drop_pending_updates=True
+            drop_pending_updates=True,
+            max_connections=40
         ))
         
         if success:
             logger.info(f"Webhook muvaffaqiyatli o'rnatildi: {webhook_url}")
+            
+            # Webhook ma'lumotlarini tekshirish
+            webhook_info = run_async(bot.get_webhook_info())
+            if webhook_info:
+                logger.info(f"Webhook ma'lumotlari: {webhook_info.url}, Xatolar: {webhook_info.last_error_message}")
+            
             return f"✅ Webhook o'rnatildi: {webhook_url}"
         else:
             logger.error("Webhook o'rnatish muvaffaqiyatsiz tugadi")
-            return "❌ Webhook o'rnatish muvaffaqiyatsiz tugadi"
+            
+            # Xatolikni aniqlash uchun webhook ma'lumotlarini olish
+            try:
+                webhook_info = run_async(bot.get_webhook_info())
+                if webhook_info:
+                    return f"❌ Webhook o'rnatish muvaffaqiyatsiz. So'nggi xato: {webhook_info.last_error_message}"
+                else:
+                    return "❌ Webhook o'rnatish muvaffaqiyatsiz. Webhook ma'lumotlari olinmadi."
+            except Exception as info_error:
+                return f"❌ Webhook o'rnatish muvaffaqiyatsiz. Xato: {info_error}"
             
     except Exception as e:
         logger.error(f"Webhook o'rnatishda xatolik: {e}")
-        return f"❌ Xatolik: {e}"
+        return f"❌ Xatolik: {str(e)}"
+
+
+
 
 # Webhook ni o'chirish
 @flask_app.route('/delete_webhook', methods=['GET'])
