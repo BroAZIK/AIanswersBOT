@@ -28,9 +28,17 @@ bot_app.add_handler(MessageHandler(filters.PHOTO, photo))
 
 @flask_app.route(f"/webhook/{TOKEN}", methods=["POST"])
 def webhook():
-    update = Update.de_json(request.get_json(force=True), bot_app.bot)
-    asyncio.get_event_loop().create_task(bot_app.process_update(update))
+    data = request.get_json(force=True, silent=True)
+    if not data:
+        return "no data", 400
+
+    update = Update.de_json(data, bot_app.bot)
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(bot_app.process_update(update))
+
     return "ok", 200
+
 
 @flask_app.route("/webhook/", methods=["GET"])
 def stage():
