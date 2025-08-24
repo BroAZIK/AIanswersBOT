@@ -10,22 +10,22 @@ from telegram.ext import (
     filters
 )
 import asyncio
-import threading
 from settings import *
 from details.handlers import button_callbacks, start, ignore_channel_posts, text, photo, stats
 
-app = Flask(__name__)
+# Flask app yaratish
+flask_app = Flask(__name__)
 
-# Bot va Application yaratish
-application = Application.builder().token(TOKEN).build()
+# Telegram Bot Application yaratish
+telegram_app = Application.builder().token(TOKEN).build()
 
-# Handlerlarni qo'shish
-application.add_handler(CallbackQueryHandler(button_callbacks))
-application.add_handler(CommandHandler("start", start))
-app.add_handler(CommandHandler("about", stats))
-application.add_handler(MessageHandler(filters.UpdateType.CHANNEL_POST, ignore_channel_posts))
-application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text))
-application.add_handler(MessageHandler(filters.PHOTO, photo))
+# Handlerlarni Telegram app ga qo'shish
+telegram_app.add_handler(CallbackQueryHandler(button_callbacks))
+telegram_app.add_handler(CommandHandler("start", start))
+telegram_app.add_handler(CommandHandler("about", stats))
+telegram_app.add_handler(MessageHandler(filters.UpdateType.CHANNEL_POST, ignore_channel_posts))
+telegram_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text))
+telegram_app.add_handler(MessageHandler(filters.PHOTO, photo))
 
 # Async funksiyani sync qilish uchun wrapper
 def async_to_sync(async_func):
@@ -39,10 +39,10 @@ def async_to_sync(async_func):
     return sync_func
 
 # Webhook endpoint (sync versiya)
-@app.route('/webhook', methods=['POST'])
+@flask_app.route('/webhook', methods=['POST'])
 def webhook():
     if request.method == "POST":
-        update = Update.de_json(request.get_json(force=True), application.bot)
+        update = Update.de_json(request.get_json(force=True), telegram_app.bot)
         # Async funksiyani sync qilib chaqiramiz
         process_update_sync(update)
     return "OK"
@@ -50,32 +50,23 @@ def webhook():
 # Async funksiyani sync qilish
 @async_to_sync
 async def process_update_sync(update):
-    await application.process_update(update)
+    await telegram_app.process_update(update)
 
 # Webhook ni o'rnatish
-@app.route('/set_webhook', methods=['GET', 'POST'])
+@flask_app.route('/set_webhook', methods=['GET', 'POST'])
 @async_to_sync
 async def set_webhook():
-    webhook_url = f"https://{os.environ.get('PYTHONANYWHERE_SITE', 'yourusername.pythonanywhere.com')}/webhook"
-    success = await application.bot.set_webhook(webhook_url)
+    webhook_url = f"https://iqmatebot.pythonanywhere.com/webhook"
+    success = await telegram_app.bot.set_webhook(webhook_url)
     if success:
         return f"Webhook o'rnatildi: {webhook_url}"
     else:
         return "Webhook o'rnatishda xatolik"
 
 # Asosiy sahifa
-@app.route('/')
+@flask_app.route('/')
 def index():
     return "Telegram Bot ishlamoqda!"
 
-# Botni ishga tushirish
-def run_bot():
-    print("Bot ishga tushmoqda...")
-    application.run_polling(
-        allowed_updates=[Update.MESSAGE, Update.CALLBACK_QUERY],
-        drop_pending_updates=True,
-    )
-
 if __name__ == "__main__":
-    # Flask ni ishga tushirish
-    app.run(debug=True)
+    flask_app.run(debug=True)
