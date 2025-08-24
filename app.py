@@ -98,8 +98,48 @@ def webhook():
         logger.error(f"Webhook da xatolik: {e}")
         return "Error", 500
 
-# Webhook ni o'rnatish
-# Webhook ni o'rnatish
+
+
+# Bot holatini tekshirish
+@flask_app.route('/bot_info', methods=['GET'])
+def bot_info():
+    try:
+        if not bot:
+            return "❌ Bot ishga tushmagan"
+        
+        # Bot ma'lumotlarini olish
+        bot_info_result = run_async(bot.get_me())
+        
+        if bot_info_result:
+            return f"""
+            <h2>✅ Bot ma'lumotlari</h2>
+            <p><strong>Ism:</strong> {bot_info_result.first_name}</p>
+            <p><strong>Username:</strong> @{bot_info_result.username}</p>
+            <p><strong>ID:</strong> {bot_info_result.id}</p>
+            <p><strong>Token:</strong> {TOKEN[:10]}...{TOKEN[-5:]}</p>
+            """
+        else:
+            return """
+            <h2>❌ Bot ma'lumotlarini olish muvaffaqiyatsiz</h2>
+            <p>Sabablari:</p>
+            <ul>
+                <li>Token noto'g'ri</li>
+                <li>Internet aloqasi yo'q</li>
+                <li>Bot bloklangan</li>
+            </ul>
+            <p>Token: {TOKEN[:10]}...{TOKEN[-5:]}</p>
+            """
+            
+    except Exception as e:
+        return f"""
+        <h2>❌ Xatolik yuz berdi</h2>
+        <p><strong>Xato:</strong> {str(e)}</p>
+        <p><strong>Token:</strong> {TOKEN[:10]}...{TOKEN[-5:]}</p>
+        """
+
+
+
+
 @flask_app.route('/set_webhook', methods=['GET'])
 def set_webhook():
     try:
