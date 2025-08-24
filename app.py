@@ -31,9 +31,12 @@ def initialize_bot():
 
 # Context yaratish
 def create_context():
-    return ContextTypes.DEFAULT_TYPE
+    class SimpleContext:
+        def __init__(self):
+            self.bot = bot
+    return SimpleContext()
 
-# Async funksiyani ishga tushirish
+# Async funksiyani ishga tushirish (yaxshilangan versiya)
 def run_async(coro):
     try:
         loop = asyncio.new_event_loop()
@@ -41,10 +44,13 @@ def run_async(coro):
         try:
             result = loop.run_until_complete(coro)
             return result
+        except Exception as e:
+            logger.error(f"Async funksiyada xatolik: {e}")
+            return None
         finally:
             loop.close()
     except Exception as e:
-        logger.error(f"Async funksiyani ishga tushirishda xatolik: {e}")
+        logger.error(f"Event loop yaratishda xatolik: {e}")
         return None
 
 # Webhook endpoint
@@ -57,32 +63,35 @@ def webhook():
 
         if request.method == "POST":
             json_data = request.get_json(force=True)
-            logger.info(f"Qabul qilingan yangi xabar")
+            logger.info("Qabul qilingan yangi xabar")
             
             update = Update.de_json(json_data, bot)
             context = create_context()
             
             # Update turi bo'yicha handlerlarni chaqirish
-            if update.message:
-                if update.message.text and update.message.text.startswith('/'):
-                    if update.message.text == '/start':
-                        run_async(start(update, context))
-                    elif update.message.text == '/about':
-                        run_async(stats(update, context))
+            try:
+                if update.message:
+                    if update.message.text and update.message.text.startswith('/'):
+                        if update.message.text == '/start':
+                            run_async(start(update, context))
+                        elif update.message.text == '/about':
+                            run_async(stats(update, context))
+                        elif update.message.photo:
+                            run_async(photo(update, context))
+                        else:
+                            run_async(text(update, context))
                     elif update.message.photo:
                         run_async(photo(update, context))
-                    else:
+                    elif update.message.text:
                         run_async(text(update, context))
-                elif update.message.photo:
-                    run_async(photo(update, context))
-                elif update.message.text:
-                    run_async(text(update, context))
-            elif update.callback_query:
-                run_async(button_callbacks(update, context))
-            elif update.channel_post:
-                run_async(ignore_channel_posts(update, context))
-                
-            logger.info("Update muvaffaqiyatli qayta ishlandi")
+                elif update.callback_query:
+                    run_async(button_callbacks(update, context))
+                elif update.channel_post:
+                    run_async(ignore_channel_posts(update, context))
+                    
+                logger.info("Update muvaffaqiyatli qayta ishlandi")
+            except Exception as e:
+                logger.error(f"Update ni qayta ishlashda xatolik: {e}")
             
         return "OK"
     except Exception as e:
@@ -130,7 +139,7 @@ def delete_webhook():
     except Exception as e:
         return f"❌ Xatolik: {e}"
 
-# Webhook ma'lumotlarini ko'rish
+# Webhook ma'lumotlarini ko'rish (xatolikni bartaraf qilgan versiya)
 @flask_app.route('/webhook_info', methods=['GET'])
 def webhook_info():
     try:
@@ -138,7 +147,30 @@ def webhook_info():
             return "Bot not initialized", 500
             
         info = run_async(bot.get_webhook_info())
-        return f"Webhook ma'lumotlari: {info.to_dict()}"
+        if info is None:
+            return "❌ Webhook ma'lumotlarini olish muvaffaqiyatsiz tugadi"
+        
+        # to_dict() metodini tekshirish
+        if hasattr(info, 'to_dict'):
+            return f"Webhook ma'lumotlari: {info.to_dict()}"
+        else:
+            return f"Webhook ma'lumotlari: {str(info)}"
+    except Exception as e:
+        return f"❌ Xatolik: {e}"
+
+# Bot holatini tekshirish
+@flask_app.route('/bot_info', methods=['GET'])
+def bot_info():
+    try:
+        if not bot:
+            return "Bot not initialized", 500
+            
+        # Oddiy bot ma'lumotlarini olish
+        me = run_async(bot.get_me())
+        if me:
+            return f"Bot ma'lumotlari: {me.first_name} (@{me.username})"
+        else:
+            return "❌ Bot ma'lumotlarini olish muvaffaqiyatsiz"
     except Exception as e:
         return f"❌ Xatolik: {e}"
 
@@ -152,6 +184,7 @@ def index():
         <li><a href="/set_webhook">Webhook ni o'rnatish</a></li>
         <li><a href="/delete_webhook">Webhook ni o'chirish</a></li>
         <li><a href="/webhook_info">Webhook ma'lumotlari</a></li>
+        <li><a href="/bot_info">Bot ma'lumotlari</a></li>
     </ul>
     """
 
@@ -159,6 +192,14 @@ def index():
 try:
     if initialize_bot():
         logger.info("Bot muvaffaqiyatli ishga tushdi")
+        
+        # Bot ma'lumotlarini tekshirish
+        me = run_async(bot.get_me())
+        if me:
+            logger.info(f"Bot: {me.first_name} (@{me.username})")
+        else:
+            logger.warning("Bot ma'lumotlarini olish muvaffaqiyatsiz")
+            
     else:
         logger.error("Botni ishga tushirib bo'lmadi")
 except Exception as e:
