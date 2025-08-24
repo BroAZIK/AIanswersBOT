@@ -6,16 +6,15 @@ from telegram.ext import (
     MessageHandler,
     CallbackQueryHandler,
     ContextTypes
-    
-    
 )
 from .api_requests import *
 from details.database.db import *
 from details.messages import *
 from details.buttons import *
 from pprint import pprint
+from settings import *
 
-bot = Bot(token="8473456433:AAFu9z8ZNi4fWfoBpo78STSiGbvahRQ8SCw")
+bot = Bot(token=TOKEN)
 
 
 async def log_saver(user_id, full_name,  text, answer, rassm=None):
@@ -48,6 +47,8 @@ async def start(update: Update, context):
         text=start_message
     )
 
+    
+
     mode = get(table="users", user_id=user_id)['mode']
     
     if mode == "short":
@@ -66,6 +67,7 @@ async def start(update: Update, context):
         text=choice_mode_text,
         reply_markup=InlineKeyboardMarkup(medium_but)
         )
+
 async def text(update: Update, context):
 
     user_id = update.message.chat_id
@@ -93,6 +95,15 @@ async def text(update: Update, context):
             text=ai_text,
             reply_markup=InlineKeyboardMarkup(complete_but)
         )
+
+async def stats(update: Update, context):
+    services = get(table="answers")
+    users_len = len(get(table="users"))
+
+    await update.message.reply_text(
+        text=stats_mes.format(users_len, services),
+        parse_mode=ParseMode.HTML
+    )
 
 async def button_callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
@@ -152,7 +163,6 @@ async def photo(update: Update, context):
             text=ai_text,
             reply_markup=InlineKeyboardMarkup(complete_but)
         )
-
 
 def ignore_channel_posts(update, context):
     print("ignor qilindi")

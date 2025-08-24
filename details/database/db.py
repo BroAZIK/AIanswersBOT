@@ -12,6 +12,8 @@ def get(table, user_id=None):
             return users.all()
         else:
             return users.get(doc_id=user_id) 
+    else:
+        return len(db2.all())
 
 
 def insert(table, data, user_id=None):
