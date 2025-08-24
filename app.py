@@ -23,17 +23,10 @@ flask_app = Flask(__name__)
 # Global application o'zgaruvchisi
 telegram_app = None
 
-# Global event loop
-event_loop = None
-
 # Botni ishga tushirish
 def initialize_bot():
-    global telegram_app, event_loop
+    global telegram_app
     try:
-        # Yangi event loop yaratish
-        event_loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(event_loop)
-        
         # Telegram Bot Application yaratish
         telegram_app = Application.builder().token(TOKEN).build()
         logger.info("Telegram app muvaffaqiyatli yaratildi")
@@ -47,10 +40,6 @@ def initialize_bot():
         telegram_app.add_handler(MessageHandler(filters.PHOTO, photo))
         logger.info("Barcha handlerlar qo'shildi")
 
-        # Application ni ishga tushirish
-        event_loop.run_until_complete(telegram_app.initialize())
-        logger.info("Telegram app initialized")
-
         return True
     except Exception as e:
         logger.error(f"Botni ishga tushirishda xatolik: {e}")
@@ -59,21 +48,17 @@ def initialize_bot():
 # Async funksiyani ishga tushirish
 def run_async(coro):
     try:
-        if event_loop and not event_loop.is_closed():
-            return event_loop.run_until_complete(coro)
-        else:
-            # Agar event loop yopiq bo'lsa, yangi yaratish
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            try:
-                return loop.run_until_complete(coro)
-            finally:
-                loop.close()
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            return loop.run_until_complete(coro)
+        finally:
+            loop.close()
     except Exception as e:
         logger.error(f"Async funksiyani ishga tushirishda xatolik: {e}")
         raise
 
-# Webhook endpoint
+# Webhook endpoint - Soddalashtirilgan versiya
 @flask_app.route('/webhook', methods=['POST'])
 def webhook():
     try:
@@ -87,9 +72,24 @@ def webhook():
             
             update = Update.de_json(json_data, telegram_app.bot)
             
-            # Update ni qayta ishlash
-            run_async(telegram_app.process_update(update))
-            logger.info("Update muvaffaqiyatli qayta ishlandi")
+            # Update ni qayta ishlash - yangi usul
+            try:
+                # To'g'ridan-to'g'ri handlerlarni chaqirish
+                if update.message:
+                    if update.message.text == '/start':
+                        run_async(start(update, None))
+                    elif update.message.text == '/about':
+                        run_async(stats(update, None))
+                    elif update.message.photo:
+                        run_async(photo(update, None))
+                    elif update.message.text:
+                        run_async(text(update, None))
+                elif update.callback_query:
+                    run_async(button_callbacks(update, None))
+                    
+                logger.info("Update muvaffaqiyatli qayta ishlandi")
+            except Exception as e:
+                logger.error(f"Update ni qayta ishlashda xatolik: {e}")
             
         return "OK"
     except Exception as e:
@@ -105,7 +105,11 @@ def set_webhook():
             
         webhook_url = f"https://iqmatebot.pythonanywhere.com/webhook"
         
-        success = run_async(telegram_app.bot.set_webhook(webhook_url))
+        success = run_async(telegram_app.bot.set_webhook(
+            webhook_url,
+            allowed_updates=['message', 'callback_query'],
+            drop_pending_updates=True
+        ))
         
         if success:
             logger.info(f"Webhook muvaffaqiyatli o'rnatildi: {webhook_url}")
