@@ -1,3 +1,7 @@
+import os 
+from dotenv import dotenv_values, load_dotenv
+load_dotenv()
+
 gpt_tasks = """
 
 Hozir sen test va savollarga javob beradigan botda ishlayabsan.
@@ -16,3 +20,7 @@ Va senga variantli savol jo'natishlari mumkinligini ham unutma !
 Sen yozgan text uzunligi 4000ta belgidan oshmasin!
 """ 
 
+api_key = os.getenv("ocr_token")
+CHANNEL_ID = os.getenv("CHANNEL_ID")
+TOKEN = os.getenv("TOKEN")
+token = os.getenv("ghp_token")

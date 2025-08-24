@@ -18,15 +18,14 @@ client = OpenAI(
 
 
 def OCRres(file_url):
-    api_key = ocr_key
     ocr_url = "https://api.ocr.space/parse/image"
 
-    print("Rasmni yuklab olish")
+    # print("Rasmni yuklab olish")
     r = requests.get(file_url)
     with open("temp.jpg", "wb") as f:
         f.write(r.content)
 
-    print("Apiga rasmni jo'natish")
+    # print("Apiga rasmni jo'natish")
     with open("temp.jpg", "rb") as f:
         response = requests.post(
             ocr_url,
