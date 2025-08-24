@@ -1,36 +1,43 @@
+import os
+import asyncio
 from flask import Flask, request
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
-import os
-
-TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
-
-# Flask ilova
-app = Flask(__name__)
-
-# PTB Application
-application = Application.builder().token(TOKEN).build()
-
-
-# Handlerlar
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Salom! Flask + PTB v20 orqali ishlayapman 🚀")
-
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(update.message.text)
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    MessageHandler,
+    CallbackQueryHandler,
+    ContextTypes,
+    filters
+)
+from settings import TOKEN
+from details.handlers import button_callbacks, start, ignore_channel_posts, text, photo, stats
 
 
-application.add_handler(CommandHandler("start", start))
-application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+flask_app = Flask(__name__)
 
 
-# Flask route (webhook qabul qilish uchun)
-@app.route(f"/webhook/{TOKEN}", methods=["POST"])
+app = Application.builder().token(TOKEN).build()
+
+
+app.add_handler(CallbackQueryHandler(button_callbacks))
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("about", stats))
+app.add_handler(MessageHandler(filters.UpdateType.CHANNEL_POST, ignore_channel_posts))
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text))
+app.add_handler(MessageHandler(filters.PHOTO, photo))
+
+
+@flask_app.route(f"/webhook/{TOKEN}", methods=["POST"])
 def webhook():
-    update = Update.de_json(request.get_json(force=True), application.bot)
-    application.update_queue.put_nowait(update)
+    update = Update.de_json(request.get_json(force=True), app.bot)
+    asyncio.get_event_loop().create_task(app.process_update(update))
     return "ok", 200
 
-
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    loop = asyncio.get_event_loop()
+    loop.create_task(app.initialize())
+    loop.create_task(app.start())
+
+    print("Webhook server ishlayapti 🚀")
+    flask_app.run(host="0.0.0.0", port=5000, debug=True)
