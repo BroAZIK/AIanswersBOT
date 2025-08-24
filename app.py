@@ -29,20 +29,21 @@ bot_app.add_handler(MessageHandler(filters.PHOTO, photo))
 @flask_app.route(f"/webhook/{TOKEN}", methods=["POST"])
 def webhook():
     try:
-        data = request.get_json(force=True, silent=True)
+        data = request.get_json(silent=True)
+        print("Kelgan xom data:", request.data)
+        print("Kelgan JSON:", data)
+
         if not data:
-            return "no data", 400
+            return "No JSON received", 400
 
         update = Update.de_json(data, bot_app.bot)
-
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(bot_app.process_update(update))
-
-        return "OK", 200
-
+        asyncio.get_event_loop().create_task(bot_app.process_update(update))
+        return "ok", 200
     except Exception as e:
-        print("Webhook error:", e)
-        return "error", 500
+        import traceback
+        print("Webhook error:", traceback.format_exc())
+        return "Internal Server Error", 500
+
 
 
 @flask_app.route("/webhook/", methods=["GET"])
