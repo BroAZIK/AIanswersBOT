@@ -23,8 +23,8 @@ flask_app = Flask(__name__)
 # Global application o'zgaruvchisi
 telegram_app = None
 
-# Async funksiyani sync qilish uchun wrapper
-def async_to_sync(async_func):
+# Har bir funksiya uchun alohida sync wrapper yaratish
+def create_async_to_sync(async_func):
     def sync_func(*args, **kwargs):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -51,7 +51,7 @@ def initialize_bot():
         telegram_app.add_handler(MessageHandler(filters.PHOTO, photo))
         logger.info("Barcha handlerlar qo'shildi")
 
-        # Application ni ishga tushirish (lekin polling emas)
+        # Application ni ishga tushirish
         telegram_app.initialize()
         logger.info("Telegram app initialized")
 
@@ -70,7 +70,7 @@ def webhook():
 
         if request.method == "POST":
             json_data = request.get_json(force=True)
-            logger.info(f"Qabul qilingan ma'lumot: {json_data}")
+            logger.info(f"Qabul qilingan ma'lumot")
             
             update = Update.de_json(json_data, telegram_app.bot)
             
@@ -84,28 +84,38 @@ def webhook():
         return "Error", 500
 
 # Update ni qayta ishlash (sync versiya)
-@async_to_sync
-async def process_update_sync(update):
+def process_update_sync(update):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     try:
-        await telegram_app.process_update(update)
+        loop.run_until_complete(telegram_app.process_update(update))
     except Exception as e:
         logger.error(f"Update ni qayta ishlashda xatolik: {e}")
+    finally:
+        loop.close()
 
 # Webhook ni o'rnatish
 @flask_app.route('/set_webhook', methods=['GET'])
-@async_to_sync
-async def set_webhook():
+def set_webhook():
     try:
+        if not telegram_app:
+            return "Bot not initialized", 500
+            
         webhook_url = f"https://iqmatebot.pythonanywhere.com/webhook"
         
-        success = await telegram_app.bot.set_webhook(webhook_url)
-        
-        if success:
-            logger.info(f"Webhook muvaffaqiyatli o'rnatildi: {webhook_url}")
-            return f"✅ Webhook o'rnatildi: {webhook_url}"
-        else:
-            logger.error("Webhook o'rnatish muvaffaqiyatsiz tugadi")
-            return "❌ Webhook o'rnatish muvaffaqiyatsiz tugadi"
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success = loop.run_until_complete(telegram_app.bot.set_webhook(webhook_url))
+            
+            if success:
+                logger.info(f"Webhook muvaffaqiyatli o'rnatildi: {webhook_url}")
+                return f"✅ Webhook o'rnatildi: {webhook_url}"
+            else:
+                logger.error("Webhook o'rnatish muvaffaqiyatsiz tugadi")
+                return "❌ Webhook o'rnatish muvaffaqiyatsiz tugadi"
+        finally:
+            loop.close()
             
     except Exception as e:
         logger.error(f"Webhook o'rnatishda xatolik: {e}")
@@ -113,24 +123,38 @@ async def set_webhook():
 
 # Webhook ni o'chirish
 @flask_app.route('/delete_webhook', methods=['GET'])
-@async_to_sync
-async def delete_webhook():
+def delete_webhook():
     try:
-        success = await telegram_app.bot.delete_webhook()
-        if success:
-            return "✅ Webhook o'chirildi"
-        else:
-            return "❌ Webhook o'chirish muvaffaqiyatsiz"
+        if not telegram_app:
+            return "Bot not initialized", 500
+            
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success = loop.run_until_complete(telegram_app.bot.delete_webhook())
+            if success:
+                return "✅ Webhook o'chirildi"
+            else:
+                return "❌ Webhook o'chirish muvaffaqiyatsiz"
+        finally:
+            loop.close()
     except Exception as e:
         return f"❌ Xatolik: {e}"
 
 # Webhook ma'lumotlarini ko'rish
 @flask_app.route('/webhook_info', methods=['GET'])
-@async_to_sync
-async def webhook_info():
+def webhook_info():
     try:
-        info = await telegram_app.bot.get_webhook_info()
-        return f"Webhook ma'lumotlari: {info.to_dict()}"
+        if not telegram_app:
+            return "Bot not initialized", 500
+            
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            info = loop.run_until_complete(telegram_app.bot.get_webhook_info())
+            return f"Webhook ma'lumotlari: {info.to_dict()}"
+        finally:
+            loop.close()
     except Exception as e:
         return f"❌ Xatolik: {e}"
 
@@ -148,14 +172,11 @@ def index():
     """
 
 # Botni ishga tushirish
-@flask_app.before_first_request
-def startup():
-    logger.info("Bot ishga tushmoqda...")
-    if initialize_bot():
-        logger.info("Bot muvaffaqiyatli ishga tushdi")
-    else:
-        logger.error("Botni ishga tushirib bo'lmadi")
+try:
+    initialize_bot()
+    logger.info("Bot muvaffaqiyatli ishga tushdi")
+except Exception as e:
+    logger.error(f"Botni ishga tushirib bo'lmadi: {e}")
 
 if __name__ == "__main__":
-    startup()
     flask_app.run(debug=True)
