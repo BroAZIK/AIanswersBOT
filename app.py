@@ -34,6 +34,10 @@ def webhook():
     asyncio.get_event_loop().create_task(app.process_update(update))
     return "ok", 200
 
+@flask_app.route(f"/webhook/", methods=["GET"])
+def stage():
+    return "Webhook is running...!"
+
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.create_task(app.initialize())
