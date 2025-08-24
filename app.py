@@ -23,21 +23,17 @@ flask_app = Flask(__name__)
 # Global application o'zgaruvchisi
 telegram_app = None
 
-# Har bir funksiya uchun alohida sync wrapper yaratish
-def create_async_to_sync(async_func):
-    def sync_func(*args, **kwargs):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            return loop.run_until_complete(async_func(*args, **kwargs))
-        finally:
-            loop.close()
-    return sync_func
+# Global event loop
+event_loop = None
 
 # Botni ishga tushirish
 def initialize_bot():
-    global telegram_app
+    global telegram_app, event_loop
     try:
+        # Yangi event loop yaratish
+        event_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(event_loop)
+        
         # Telegram Bot Application yaratish
         telegram_app = Application.builder().token(TOKEN).build()
         logger.info("Telegram app muvaffaqiyatli yaratildi")
@@ -52,13 +48,30 @@ def initialize_bot():
         logger.info("Barcha handlerlar qo'shildi")
 
         # Application ni ishga tushirish
-        telegram_app.initialize()
+        event_loop.run_until_complete(telegram_app.initialize())
         logger.info("Telegram app initialized")
 
         return True
     except Exception as e:
         logger.error(f"Botni ishga tushirishda xatolik: {e}")
         return False
+
+# Async funksiyani ishga tushirish
+def run_async(coro):
+    try:
+        if event_loop and not event_loop.is_closed():
+            return event_loop.run_until_complete(coro)
+        else:
+            # Agar event loop yopiq bo'lsa, yangi yaratish
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                return loop.run_until_complete(coro)
+            finally:
+                loop.close()
+    except Exception as e:
+        logger.error(f"Async funksiyani ishga tushirishda xatolik: {e}")
+        raise
 
 # Webhook endpoint
 @flask_app.route('/webhook', methods=['POST'])
@@ -70,29 +83,18 @@ def webhook():
 
         if request.method == "POST":
             json_data = request.get_json(force=True)
-            logger.info(f"Qabul qilingan ma'lumot")
+            logger.info(f"Qabul qilingan yangi xabar")
             
             update = Update.de_json(json_data, telegram_app.bot)
             
-            # To'g'ridan-to'g'ri process_update ni chaqiramiz
-            process_update_sync(update)
+            # Update ni qayta ishlash
+            run_async(telegram_app.process_update(update))
             logger.info("Update muvaffaqiyatli qayta ishlandi")
             
         return "OK"
     except Exception as e:
         logger.error(f"Webhook da xatolik: {e}")
         return "Error", 500
-
-# Update ni qayta ishlash (sync versiya)
-def process_update_sync(update):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try:
-        loop.run_until_complete(telegram_app.process_update(update))
-    except Exception as e:
-        logger.error(f"Update ni qayta ishlashda xatolik: {e}")
-    finally:
-        loop.close()
 
 # Webhook ni o'rnatish
 @flask_app.route('/set_webhook', methods=['GET'])
@@ -103,19 +105,14 @@ def set_webhook():
             
         webhook_url = f"https://iqmatebot.pythonanywhere.com/webhook"
         
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            success = loop.run_until_complete(telegram_app.bot.set_webhook(webhook_url))
-            
-            if success:
-                logger.info(f"Webhook muvaffaqiyatli o'rnatildi: {webhook_url}")
-                return f"✅ Webhook o'rnatildi: {webhook_url}"
-            else:
-                logger.error("Webhook o'rnatish muvaffaqiyatsiz tugadi")
-                return "❌ Webhook o'rnatish muvaffaqiyatsiz tugadi"
-        finally:
-            loop.close()
+        success = run_async(telegram_app.bot.set_webhook(webhook_url))
+        
+        if success:
+            logger.info(f"Webhook muvaffaqiyatli o'rnatildi: {webhook_url}")
+            return f"✅ Webhook o'rnatildi: {webhook_url}"
+        else:
+            logger.error("Webhook o'rnatish muvaffaqiyatsiz tugadi")
+            return "❌ Webhook o'rnatish muvaffaqiyatsiz tugadi"
             
     except Exception as e:
         logger.error(f"Webhook o'rnatishda xatolik: {e}")
@@ -128,16 +125,11 @@ def delete_webhook():
         if not telegram_app:
             return "Bot not initialized", 500
             
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            success = loop.run_until_complete(telegram_app.bot.delete_webhook())
-            if success:
-                return "✅ Webhook o'chirildi"
-            else:
-                return "❌ Webhook o'chirish muvaffaqiyatsiz"
-        finally:
-            loop.close()
+        success = run_async(telegram_app.bot.delete_webhook())
+        if success:
+            return "✅ Webhook o'chirildi"
+        else:
+            return "❌ Webhook o'chirish muvaffaqiyatsiz"
     except Exception as e:
         return f"❌ Xatolik: {e}"
 
@@ -148,13 +140,8 @@ def webhook_info():
         if not telegram_app:
             return "Bot not initialized", 500
             
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            info = loop.run_until_complete(telegram_app.bot.get_webhook_info())
-            return f"Webhook ma'lumotlari: {info.to_dict()}"
-        finally:
-            loop.close()
+        info = run_async(telegram_app.bot.get_webhook_info())
+        return f"Webhook ma'lumotlari: {info.to_dict()}"
     except Exception as e:
         return f"❌ Xatolik: {e}"
 
@@ -173,10 +160,12 @@ def index():
 
 # Botni ishga tushirish
 try:
-    initialize_bot()
-    logger.info("Bot muvaffaqiyatli ishga tushdi")
+    if initialize_bot():
+        logger.info("Bot muvaffaqiyatli ishga tushdi")
+    else:
+        logger.error("Botni ishga tushirib bo'lmadi")
 except Exception as e:
-    logger.error(f"Botni ishga tushirib bo'lmadi: {e}")
+    logger.error(f"Botni ishga tushirishda xatolik: {e}")
 
 if __name__ == "__main__":
     flask_app.run(debug=True)
