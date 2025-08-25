@@ -1,3 +1,7 @@
+import os 
+from dotenv import dotenv_values, load_dotenv
+load_dotenv()
+
 gpt_tasks = """
 
 Hozir sen test va savollarga javob beradigan botda ishlayabsan.
@@ -16,7 +20,3 @@ Va senga variantli savol jo'natishlari mumkinligini ham unutma !
 Sen yozgan text uzunligi 4000ta belgidan oshmasin!
 """ 
 
-CHANNEL_ID = "-1003035952638"
-TOKEN = "8473456433:AAFu9z8ZNi4fWfoBpo78STSiGbvahRQ8SCw"
-token = "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"
-ocr_key = "K83430220988957"
