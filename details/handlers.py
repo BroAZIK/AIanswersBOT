@@ -71,6 +71,7 @@ async def start(update: Update, context):
 async def text(update: Update, context):
 
     user_id = update.message.chat_id
+    await update.message.set_reaction("👍")
     xabar = update.message.text
     mode = get(table="users", user_id=user_id)['mode']
 
