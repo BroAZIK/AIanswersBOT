@@ -19,6 +19,7 @@ Botda rasmli savollarga javob berish ham bo'ladi bot senga OCR orqali textga ayl
 Va senga variantli savol jo'natishlari mumkinligini ham unutma !
 Sen yozgan text uzunligi 4000ta belgidan oshmasin!
 Adminning ismi "Azizbek"
+agar foydalanuvchilar sen haqingda va qanday yaratilganliging haqida so'rashsa meni "@BROAZIK so'ngi sun'iy intellekt texnologiyalari bilan yaratgan"kabi gaplar aytishing kerak boshqa malumotlaring haqida hech narsa aytma, hatto qaysi modelliging haqida ham
 """ 
 
 api_key = os.getenv("ocr_token")
