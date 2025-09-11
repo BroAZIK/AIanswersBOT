@@ -1,5 +1,5 @@
 from telegram import Update, Bot, InlineKeyboardMarkup
-from telegram.constants import ParseMode
+from telegram.constants import ParseMode, ChatAction
 from telegram.ext import (
     Updater,
     CommandHandler,
@@ -17,19 +17,19 @@ from settings import *
 bot = Bot(token=TOKEN)
 
 
-async def log_saver(user_id, full_name,  text, answer, rassm=None):
+async def log_saver(user_id, full_name,  text, answer, caption=None, rassm=None):
     if rassm != None:
         try:
-            await bot.send_photo(chat_id=CHANNEL_ID, photo=rassm, caption=f"<a href='tg://user?id={user_id}'>{full_name}</a>:\n{text}\n\n{answer}", parse_mode=ParseMode.HTML)
+            await bot.send_photo(chat_id=CHANNEL_ID, photo=rassm, caption=f"<a href='tg://user?id={user_id}'>{full_name}</a>:\n-{text}\n-{caption}\n\n@IQmate_bot\n-{answer}", parse_mode=ParseMode.HTML)
             insert(table="question", data={"user_id": user_id,"savol": text, "full_name": full_name, "photo": rassm})
         except:
-            await bot.send_photo(chat_id=CHANNEL_ID, photo=rassm, caption=f"<a href='tg://user?id={user_id}'>{full_name}</a>:\n{text}\n\nJavob berildi !", parse_mode=ParseMode.HTML)
+            await bot.send_photo(chat_id=CHANNEL_ID, photo=rassm, caption=f"<a href='tg://user?id={user_id}'>{full_name}</a>:\n-{text}\n-{caption}\n\n@IQmate_bot\n-Javob berildi !", parse_mode=ParseMode.HTML)
             insert(table="question", data={"user_id": user_id,"savol": text, "full_name": full_name, "photo": rassm})
     else:
         try:
-            await bot.send_message(chat_id=CHANNEL_ID, text=f"\n<a href='tg://user?id={user_id}'>{full_name}</a>:\n{text}\n\n{answer}", parse_mode=ParseMode.HTML)
+            await bot.send_message(chat_id=CHANNEL_ID, text=f"\n<a href='tg://user?id={user_id}'>{full_name}</a>:\n-{text}\n\n@IQmate_bot\n-{answer}", parse_mode=ParseMode.HTML)
         except:
-            await bot.send_message(chat_id=CHANNEL_ID, text=f"\n<a href='tg://user?id={user_id}'>{full_name}</a>:\n{text}\n\nJavob berildi  !", parse_mode=ParseMode.HTML)
+            await bot.send_message(chat_id=CHANNEL_ID, text=f"\n<a href='tg://user?id={user_id}'>{full_name}</a>:\n{text}\n\n@IQmate_bot\n-Javob berildi  !", parse_mode=ParseMode.HTML)
         insert(table="question", data={"user_id": user_id,"savol": text, "full_name": full_name, "photo": rassm})
 
     print("loglar muammosiz jo'natildi")
@@ -38,35 +38,40 @@ async def start(update: Update, context):
     user_id = update.message.chat_id
     full_name = update.effective_chat.full_name
     
-    insert(table="users", user_id=user_id, data={
-            "name": full_name,
-            "mode": "medium"
-        })
+    member = await context.bot.get_chat_member(chat_id=NEWS_CHANNEL_ID, user_id=user_id)
+    if member.status not in ['member', 'administrator', 'creator']:
+        await update.message.reply_text(text="Botning yangiliklar kanaliga a'zo bo'ling❗️",
+                                        reply_markup=InlineKeyboardMarkup(channel_but))
+    else:
+        insert(table="users", user_id=user_id, data={
+                "name": full_name,
+                "mode": "medium"
+            })
 
-    await update.message.reply_text(
-        text=start_message
-    )
-
-    
-
-    mode = get(table="users", user_id=user_id)['mode']
-    
-    if mode == "short":
         await update.message.reply_text(
-        text=choice_mode_text,
-        reply_markup=InlineKeyboardMarkup(short_but)
+            text=start_message
         )
-    if mode == "complete":
-        await update.message.reply_text(
-        text=choice_mode_text,
-        reply_markup=InlineKeyboardMarkup(complete_but)
-        )    
+
     
-    if mode == "medium":
-        await update.message.reply_text(
-        text=choice_mode_text,
-        reply_markup=InlineKeyboardMarkup(medium_but)
-        )
+
+        mode = get(table="users", user_id=user_id)['mode']
+    
+        if mode == "short":
+            await update.message.reply_text(
+            text=choice_mode_text,
+            reply_markup=InlineKeyboardMarkup(short_but)
+            )
+        if mode == "complete":
+            await update.message.reply_text(
+            text=choice_mode_text,
+            reply_markup=InlineKeyboardMarkup(complete_but)
+            )    
+    
+        if mode == "medium":
+            await update.message.reply_text(
+            text=choice_mode_text,
+            reply_markup=InlineKeyboardMarkup(medium_but)
+            )
 
 async def text(update: Update, context):
 
@@ -76,6 +81,11 @@ async def text(update: Update, context):
     mode = get(table="users", user_id=user_id)['mode']
 
     print("text ishlavotti")
+
+    await context.bot.send_chat_action(
+        chat_id=update.effective_chat.id,
+        action=ChatAction.TYPING
+    )
 
     ai_text = ai_request(text=f"user.{user_id} | {xabar} | mode.{mode}")
     await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=xabar, answer=ai_text, rassm=None)
@@ -112,8 +122,44 @@ async def button_callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = query.from_user.id
     # pprint(query.to_dict())
     mode = get(table="users", user_id=user_id)['mode']
+    member = await context.bot.get_chat_member(chat_id=NEWS_CHANNEL_ID, user_id=user_id)
+    if query.data == "check":
+        if member.status not in ['member', 'administrator', 'creator']:
+            await query.answer(text="Siz xali kanalga a'zo emassiz❌")
+        else:
+            insert(table="users", user_id=user_id, data={
+                "name": query.from_user.full_name,
+                "mode": "medium"
+            })
+
+            await context.bot.delete_message(chat_id=user_id, message_id=query.message.message_id)
+            
+            await query.message.reply_text(
+            text=start_message
+            )
+
     
-    if query.data != mode:
+
+            mode = get(table="users", user_id=user_id)['mode']
+    
+            if mode == "short":
+                await query.message.reply_text(
+                text=choice_mode_text,
+                reply_markup=InlineKeyboardMarkup(short_but)
+                )
+            if mode == "complete":
+                await query.message.reply_text(
+                text=choice_mode_text,
+                reply_markup=InlineKeyboardMarkup(complete_but)
+                )    
+    
+            if mode == "medium":
+                await query.message.reply_text(
+                text=choice_mode_text,
+                reply_markup=InlineKeyboardMarkup(medium_but)
+                )
+
+    elif query.data != mode:
         if query.data == "short":
             upd(table="users", user_id=user_id, data={"mode": "short"})
             await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(short_but))
@@ -131,21 +177,29 @@ async def button_callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.answer("Boshqa rejimni tanlang❗️", show_alert=False)
 
 async def photo(update: Update, context):
-
+    await update.message.set_reaction("👍")
     rasm = update.message.photo[-1].file_id
     tg_file = await context.bot.get_file(rasm)
+    caption = update.message.caption
     file_path = tg_file.file_path
     user_id = update.effective_chat.id
     mode = get(table="users", user_id=user_id)['mode']
 
+    await context.bot.send_chat_action(
+        chat_id=update.effective_chat.id,
+        action=ChatAction.TYPING
+    )
     print("rasm qabul qilindi")
     ocr_text = OCRres(file_path)
     print("OCR dan xabar keldi")
-
     
-
-    ai_text = ai_request(text=f"user.{user_id} | {ocr_text} | mode.{mode}")
-    await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=ocr_text, answer=ai_text,rassm=rasm)
+    if caption:
+        ai_text = ai_request(text=f"user.{user_id} | {ocr_text} | {caption} | mode.{mode}")
+        await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=ocr_text,caption=caption, answer=ai_text,rassm=rasm)
+    else:
+        ai_text = ai_request(text=f"user.{user_id} | {ocr_text} | mode.{mode}")
+        await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=ocr_text, answer=ai_text,rassm=rasm)
+    
     print("ai dan xabar keldi")
 
 

@@ -113,6 +113,156 @@
             "savol": "Salom",
             "full_name": "BroAZIK",
             "photo": null
+        },
+        "20": {
+            "user_id": 5143376517,
+            "savol": "Menga tasklaring haqida aytib ber",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "21": {
+            "user_id": 5143376517,
+            "savol": "ahvoling qalay",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "22": {
+            "user_id": 5143376517,
+            "savol": "menga bitta savol ber",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "23": {
+            "user_id": 5143376517,
+            "savol": "Yer yuzida eng katta qit'a qaysi?",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAMnaMEH5h2h7JGZ-73GP5lDC-wFguYAAvL5MRtwrQlK0zOqqAAByGJ5AQADAgADbQADNgQ"
+        },
+        "24": {
+            "user_id": 5143376517,
+            "savol": "python-telegram-bot==22.3 kutubxonasida start bosgan user telegram kanalga qo'shilgan yoki qo'shilmaganligini tekshiradigan kod yozib ber.",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "25": {
+            "user_id": 5143376517,
+            "savol": "salom",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "26": {
+            "user_id": 5143376517,
+            "savol": "python-telegram-bot==22.3 kutubxonasida inlineButton bosilganda o'sha xabar yo'q bo'lib ketadigan kod kerak",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "27": {
+            "user_id": 5143376517,
+            "savol": "python-telegram-bot==22.3 kutubxonasida user xabar yozganda bot javob berguncha interfeysda  bot typing bo'lib tursin",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "28": {
+            "user_id": 5143376517,
+            "savol": "from telegram import Update, Bot, InlineKeyboardMarkup, ChatAction\nImportError: cannot import name 'ChatAction' from 'telegram' (C:\\Users\\user\\Desktop\\Coding\\AIanswersBOT\\env\\lib\\site-packages\\telegram\\__init__.py)",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "29": {
+            "user_id": 5143376517,
+            "savol": "ahvoling qalay",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "30": {
+            "user_id": 5143376517,
+            "savol": "ahvoling qalay",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "31": {
+            "user_id": 5143376517,
+            "savol": "Ahvollaring qalay",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "32": {
+            "user_id": 5143376517,
+            "savol": "menga bitta savol ber va javobini aytma",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "33": {
+            "user_id": 5143376517,
+            "savol": "O'zbekiston Respublikasining poytaxti qaysi shahar?",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAOGaMKm040S697UaLSj4cj8AjvCzRUAArL_MRuytRhKwp-RDIIGp0cBAAMCAAN4AAM2BA"
+        },
+        "34": {
+            "user_id": 5143376517,
+            "savol": "Savol: CYzbekiston Respublikasining davlat madhiyasi kim\r\ntomonidan yozilgan?\r\n3:39 PM",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAOIaMKnixxdZ_j-Ryya4G3by7UJU50AArj_MRuytRhKP2IYI0zUZqIBAAMCAAN4AAM2BA"
+        },
+        "35": {
+            "user_id": 5143376517,
+            "savol": "yana savol ber",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "36": {
+            "user_id": 5143376517,
+            "savol": "menga savol ber",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "37": {
+            "user_id": 5143376517,
+            "savol": "menga bitta savol ber va javobini aytma",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "38": {
+            "user_id": 5143376517,
+            "savol": "Bitta kvadratning tomon uzunligi 5 sm. Uning yuzasi\r\nnecha kvadrat santimetr bo'ladi?",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAOQaMKo1DATZEbA-LiRHkLecvsLSkoAAsL_MRuytRhKJeT5c1WanToBAAMCAAN4AAM2BA"
+        },
+        "39": {
+            "user_id": 5143376517,
+            "savol": "Bitta kvadratning tomon uzunligi 5 sm. Uning yuzasi\r\nnecha kvadrat santimetr bo'ladi?",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAOQaMKo1DATZEbA-LiRHkLecvsLSkoAAsL_MRuytRhKJeT5c1WanToBAAMCAAN4AAM2BA"
+        },
+        "40": {
+            "user_id": 5143376517,
+            "savol": "Bitta kvadratning tomon uzunligi 5 sm. Uning yuzasi\r\nnecha kvadrat santimetr bo'ladi?",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAOQaMKo1DATZEbA-LiRHkLecvsLSkoAAsL_MRuytRhKJeT5c1WanToBAAMCAAN4AAM2BA"
+        },
+        "41": {
+            "user_id": 5143376517,
+            "savol": "menga bitta savol ber va javobini aytma",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "42": {
+            "user_id": 5143376517,
+            "savol": "Mana savol: Quyidagi sonlardan eng kichigini toping: 27,\r\n14, 35, 22",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAOYaMKqradZS7I2gQ8OySg9ahdBXBYAAs__MRuytRhKiImBfhZGBLUBAAMCAAN4AAM2BA"
+        },
+        "43": {
+            "user_id": 5143376517,
+            "savol": "Mana savol: Quyidagi sonlardan eng kichigini toping: 27,\r\n14, 35, 22",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAOYaMKqradZS7I2gQ8OySg9ahdBXBYAAs__MRuytRhKiImBfhZGBLUBAAMCAAN4AAM2BA"
+        },
+        "44": {
+            "user_id": 5143376517,
+            "savol": "salom ahvollaring qalay",
+            "full_name": "BroAZIK",
+            "photo": null
         }
     }
 }
