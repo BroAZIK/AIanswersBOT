@@ -13,6 +13,7 @@ from details.messages import *
 from details.buttons import *
 from pprint import pprint
 from settings import *
+from .image_request import vision_responser
 
 bot = Bot(token=TOKEN)
 
@@ -181,7 +182,7 @@ async def photo(update: Update, context):
     rasm = update.message.photo[-1].file_id
     tg_file = await context.bot.get_file(rasm)
     caption = update.message.caption
-    file_path = tg_file.file_path
+    file_path = os.path.join("details", "test.jpg")
     user_id = update.effective_chat.id
     mode = get(table="users", user_id=user_id)['mode']
 
@@ -189,18 +190,33 @@ async def photo(update: Update, context):
         chat_id=update.effective_chat.id,
         action=ChatAction.TYPING
     )
-    print("rasm qabul qilindi")
-    ocr_text = OCRres(file_path)
-    print("OCR dan xabar keldi")
+
+    await tg_file.download_to_drive(file_path)
+    print("Rasm yuklandi")
+    # ocr_text = OCRres(file_path)
+
     
     if caption:
-        ai_text = ai_request(text=f"user.{user_id} | {ocr_text} | {caption} | mode.{mode}")
-        await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=ocr_text,caption=caption, answer=ai_text,rassm=rasm)
-    else:
-        ai_text = ai_request(text=f"user.{user_id} | {ocr_text} | mode.{mode}")
-        await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=ocr_text, answer=ai_text,rassm=rasm)
+        await context.bot.send_chat_action(
+        chat_id=update.effective_chat.id,
+        action=ChatAction.TYPING
+        )
+        
+        ai_text = vision_responser(text=f"user.{user_id} | {caption} | mode.{mode}")
+
+        # ai_text = ai_request(text=f"user.{user_id} | {ocr_text} | {caption} | mode.{mode}")
+        await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=caption ,caption=caption, answer=ai_text)
     
-    print("ai dan xabar keldi")
+    else:
+        await context.bot.send_chat_action(
+        chat_id=update.effective_chat.id,
+        action=ChatAction.TYPING
+        )
+
+        ai_text = vision_responser(text=f"user.{user_id} | kaptcha malumoti yo'q | mode.{mode}")
+        # ai_text = ai_request(text=f"user.{user_id} | {ocr_text} | mode.{mode}")
+        await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=" ", answer=ai_text,rassm=rasm)
+    
 
 
     if mode == "short":

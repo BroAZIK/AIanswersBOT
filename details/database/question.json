@@ -263,6 +263,126 @@
             "savol": "salom ahvollaring qalay",
             "full_name": "BroAZIK",
             "photo": null
+        },
+        "45": {
+            "user_id": 5143376517,
+            "savol": "Rasmda test-savol ko'rsatilgan. Savol: \"All the expenses for the scientific explorations in the area ___ by a number of private institutions.\" To'ldirish uchun variantlar:  \n1) had borne  \n2) bore  \n3) will bear  \n4) are borne.\n\nSavolni tugallanmagan gap shaklida test topshirig'i tarzida berilgan va respondentlardan to'g'ri javobni tanlash so'ralgan.  \n\nPrompt: \"Quyidagi jumlani to'ldirish uchun to'g'ri grammatik shaklni belgilang: 'All the expenses for the scientific explorations in the area ___ by a number of private institutions.' Variantlar: 1) had borne 2) bore 3) will bear 4) are borne. Javobni tushuntirib bering va izoh qilib qaysi javob nima uchun to'g'ri yoki noto'g'riligini batafsil yozing.\"",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAOtaMMTIcnahSdr1Ok2ZASrOs4z1EoAAvYCMhtObhlKAto1Gt2338kBAAMCAAN5AAM2BA"
+        },
+        "46": {
+            "user_id": 5143376517,
+            "savol": "Rasmda quyidagi matn ko'rsatilgan bo'lib, bu tarixiy voqea haqida gap ketmoqda, unda Avstraliyaga kelgan xizmatkorlar va ularning turmush sharoitlari haqida ma'lumot berilgan. Matn ostida esa ushbu mavzu asosida savolga to\u2018rt ta variant orasidan javob tanlash kerak bo\u2018lgan test topshirig\u2018i joylashtirilgan.\n\nPrompt: Mana ushbu test topshirig'i savolini o'qing va berilgan matnga asoslangan holda to'g'ri javobni aniqlang. Maqsad, tarixiy ma\u2019lumotlar asosida, 1849 yildagi xizmatkorlar haqida to\u2018g\u2018ri xulosa chiqarish uchun to\u2018g\u2018ri tanlovni aniqlashdir.",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAOyaMMXB1RMW2EhHyJmZ-VVA58y9wQAAqMDMhuytRhKAXlBC8j9rVMBAAMCAAN5AAM2BA"
+        },
+        "47": {
+            "user_id": 5143376517,
+            "savol": "Mazmunni tushunish va savolga javob topish uchun kerakli ma\u02bclumot beruvchi promptni tayyorlang:\n\n---\n\nBeringan rasm ingliz tilida matn va savollarni ko'rsatmoqda. Iltimos, matn mazmunini tahlil qilib, savolga eng mos javobni aniqlang. Matn mavzusi 1849 yildagi xizmatkor va migratsiya jarayonlari haqida, savol esa ularga qanday sharoitlar va hislar bog\u02bbliq ekani yuzasidan.",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAOyaMMXB1RMW2EhHyJmZ-VVA58y9wQAAqMDMhuytRhKAXlBC8j9rVMBAAMCAAN5AAM2BA"
+        },
+        "48": {
+            "user_id": 5143376517,
+            "savol": "Rasmda ko'rsatilgan test savolini tahlil qilib, \"Bu tiniq yaxshi taniyman\" degan fikr kimga qaratilganligi haqida javobni topish uchun yordam beradigan matnli modelga savol ber. Mazkur test savoli to'g'ri javobni topishga imkon beradi va berilgan variantlar quyidagicha: \n\n1. Qurbonboyga  \n2. Ayolga ",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAO2aMMX59fUrAotc1SAGS8ia_p0kgMAAqYDMhuytRhKz2feFANBHHoBAAMCAAN5AAM2BA"
+        },
+        "49": {
+            "user_id": 5143376517,
+            "savol": "\"Quyida Tillayev obrazi qaysi asarda uchrashini aniqlash uchun javobni qaytar:  \n1. Qoplon  \n2. Qorako'z majnun  \n3. Sobiq  \nTo'g'ri javobni aniqlang.\"",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAO5aMMZLO5-j6NuKdaFsVtu7HTpD5cAArADMhuytRhKUO8B-GTguOABAAMCAAN4AAM2BA"
+        },
+        "50": {
+            "user_id": 5143376517,
+            "savol": "\"Suratdagi savol quyidagicha: 'Sobiq hikoyasida majoziy ma'nodagi it tasviri kim edi?' Ushbu savolga javob variantlari 'Direktor' va 'Qurbonboy' ko'rinishida berilgan.\"",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAO7aMMZui50mZbo2_hIhyKjvYoNfrQAArMDMhuytRhK2zggIRtD264BAAMCAAN4AAM2BA"
+        },
+        "51": {
+            "user_id": 5143376517,
+            "savol": "Rasmda qo'lda yozilgan matn mavjud. Matnni o'qish uchun quyidagi promptdan foydalaning:\n\n\"Qo'lda yozilgan rasmli matndan quyidagi matnni aniqlang: 'Sobiq ij tiklay olishda' (o'xshash matn bo'lishi mumkin). Matnni to'g'ri aniqlab, o'zbek tilida chiqaring.\"",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAO9aMMaa0Nig3yyltmigilYnB53w8IAArkDMhuytRhKI8aQJy8_1vEBAAMCAAN4AAM2BA"
+        },
+        "52": {
+            "user_id": 5143376517,
+            "savol": "\"Rasmda berilgan savolni va uning javob variantlarini o'qing, tushunib chiqing va to'g'ri javobni tanlang. E'tibor bering, savol 1-bo'lib tartiblangan va javob variantlari a, b, c, d harflarida berilgan.\"",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAO_aMMbQgazGHMRF-6qyNeXkSFsvfUAAr0DMhuytRhKzpcB410AARTCAQADAgADeQADNgQ"
+        },
+        "53": {
+            "user_id": 5143376517,
+            "savol": "Suratdagi matnni o\u2018qing va unga asosan savolga javob bering:  \n\nMatnda shunday yozilgan:  \n\"Qizig'i?  \nSahif it hikoyasida majnun manodagi\"  \nVariantlar:  \nA) Direktor  \nB) Ayol  \nC) Erkak  \n\nMatnga asoslanib to\u2018g\u2018ri javobni toping. ",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAPBaMMbutoAAbNHLNCt-pbrCykt8Y2kAALAAzIbsrUYShrGEWKUN9kDAQADAgADeQADNgQ"
+        },
+        "54": {
+            "user_id": 5143376517,
+            "savol": "salom",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "55": {
+            "user_id": 5143376517,
+            "savol": "Rasmning mazmunini hisobga olib, quyidagicha promptni qaytaraman:\n\n\"Telegramdagi test botidan made h kamida 5/28 savolli test bo\u02bblib, xususan, 'Chorsu bozori tasviri berilgan hikoya?' savoliga javob berish so\u02bbralmoqda. Tanlovlar: 1) Qoplon, 2) Sobiq, 3) O\u02bbzga maqom, 4) Qorako\u02bbz majnun. Ushbu savolning to\u02bbg\u02bbri javobini aniqlang.\"",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAPMaMPIRSpHwNvcIyeVEoDrDV87koIAAmn9MRuytSBKp3-tbf1KbwMBAAMCAAN5AAM2BA"
+        },
+        "56": {
+            "user_id": 5143376517,
+            "savol": "Rasmda ko'rsatilgan ma'lumotlardan foydalanib, quyidagi savolga javob toping:  \n\"Sa\u2019id Ahmad hikoyalari ustoz @hamzayevanulfar testni to'xtatgan, chunki siz javob berishni to'xtatdingiz. Savol: Chorsu bozori tasvir berilgan hikoya? Javob variantlari: Oqplon, Chiyon, Qorako'z majnun.\"  \nShuningdek, bundan keyingi savolda so\u2018ralmoqda: \"BOTIRXON nechanchi yil armiyaga ketgan edi?\" Javob variantlari: 1960, 1967. Shu savollarga to\u2018g\u2018ri javobni aniqlash lozim.",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAPRaMPIiYF4xND5hvFKAjGqGWWKjLQAAmv9MRuytSBKk0wVefZ-iogBAAMCAAN5AAM2BA"
+        },
+        "57": {
+            "user_id": 5143376517,
+            "savol": "No problem! Here's the prompt you can use:\n\n---\n\nSurxq\u2019o\u2018tal yodgorligining qayerda joylashganini va Miloddan avvalgi 722-yilda sodir bo\u2018lgan muhim voqeani aniqlash uchun quyidagi savollarni AI ichida tahlil qil:  \n1. Surxq\u2019o\u2018tal yodgorligi qayerda joylashgan?  \na) Tojikistonda  \nb) Afg\u2018onistonda  \nc) Surxon vohasida  \nd) Hindistonda  \n\n2. Miloddan avvalgi 722-yilda qadimgi dunyo tarixida bo\u2018lib o\u2018tgan muhim voqeani eslang:  \na) Gang vodiyida suvlar tizimining shakllanishi  \nb) Isroil davlati asos solinishi  \nc) Falastinda Dovud podsholigining boshlanishi  \nd) Tir shahridan ko'chib kelganlar tomonidan Karfagen shahriga asos solinishi  \n\nMazkur test savollarini tahlil qilib, to\u2018g\u2018ri javoblarni aniqlash uchun AI modeliga yuqorida keltirilgan variantlar bilan tegishli ravishda to\u2018liq analiz chiqaring.",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAPWaMPJXaP2mhMkTGyNxskb1nzUwSEAAm79MRuytSBKZdx02W119uEBAAMCAAN5AAM2BA"
+        },
+        "58": {
+            "user_id": 5143376517,
+            "savol": "3. Miloddan avvalgi 480-479-yillarda Kserksning Bolqon yarimoroliga uyushtirgan harbiy yurishlari muvaffaqiyatsizlik bilan tugagan edi. Bundayi hol quydagi janglar qaysi hududlarda bo'gan edi? (To'g'ri javobni aniqlang)  \na) Arvad va Kilikiyada  \nb) Kappadokiya va Brundiziyada  \nc) Salamin va Tirda  \nd) Salamin va Mikalda  \n\n4. IV asrda Kushonlar yerini egallab olgan xalq qaysi javobda to'g'ri ko'rsatilgan?  \na) shumerlar  \nb) axadlar  \nc) xioniylar  \nd) so'g'diylar  \n\n5. \"Rimga yurish\" deganda nimani tushunasiz?  \na) Rim papasining hokimiyatini mustahkamlash  \nb) Rim papasi bilan hukumat o'rtasidagi nizolarni bartaraf etish  \nc) Benito Mussolininig hokimiyatini mustahkamlash uchun qo'yilgan choralar  \nd) Imperial hokimining Rimdagi g'alayonlarni bosti\u00adrishini  \n\nPROMPT: Yuqoridagi savollarga tegishli har bir to'g'ri javobni aniqlab, izoh bilan javoblar ro'yxatini tuzing.",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAPYaMPJj0k9ZURebAHt0eL3Nk6rX8MAAp_9MRuytSBKeUbhBIOVjEsBAAMCAAN5AAM2BA"
+        },
+        "59": {
+            "user_id": 5143376517,
+            "savol": "Rasmda ko'rsatilgan savollar va ularning javob variantlariga qarab quyidagi promptni yozing:\n\n---\n\nRasmda bir nechta test savollari berilgan. Iltimos, savollarning to'g'ri javoblarini va ular tegishli ravishda mos kelgan javob variantlarini aniqlab bering. Rasmda quyidagi savollar mavjud:\n\n6. Qadimgi hindlar ijtimoiy tabaqalarni to'rt qismini moslashtirib topishni so'raydi: kohinlar; jangchilar; dehqonlar, xizmatkorlar (javob variantlari ko'rsatilgan).\n7. Qarluq va O'g'uzlar davlatiga tegishli tarixiy voqeani aniqlash so'ralgan (yo'nalishlar va javob variantlari berilgan).\n8. Usmonli Turklar Serbiyani o'zlashitirdan so'ng sodir bo'lgan katta voqeani aniqlash haqida so'ralgan.\n\nTo'g'ri javoblarni o'xshash bo'lmagan mantiqiy izohlar bilan qaytaring va o'zbek tilida aniq bayon qiling.",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAPaaMPJwelSlQ6y1odrWfCaOUpEEDEAAqH9MRuytSBKClP5GxPWdh4BAAMCAAN4AAM2BA"
+        },
+        "60": {
+            "user_id": 5143376517,
+            "savol": "Rasm ichidagi savol:  \n\"Qarluqlar va O'g'uzlar davlati qaysi hududlar aholisining siyosiy hayotiga kuchli ta'sir o'tkazganligini toping.\"\n\nVariantlar:  \na) Movarounnahr, Sharqiy Turkiston, Afg'oniston  \nb) Oltoy, Orolbo'yi hududi, O'rta Osiyo  \nc) Orolbo'yi, Yettisuv, Movarounnahr  \nd) Movarounnahr, O'rta harq, Old Osiyo\n\n**Tasdiqlovchi prompt:**  \n\"Qarluqlar va O'g'uzlar davlati qaysi hududlarda siyosiy ta'sir ko'rsatgani haqida savol berilgan. Javobni qisqacha variantlar asosida tushuntirib, to'g'ri javobni tanlang.\"",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAPcaMPKVxP9aYG0j4K4ZrKjvR4Vx-UAAqP9MRuytSBKhLU3M_GZc_gBAAMCAAN4AAM2BA"
+        },
+        "61": {
+            "user_id": 5143376517,
+            "savol": "Quyidagi savolning to'g'ri javobini aniqlash uchun kerakli tahlilni amalga oshiring:  \n\nSavol: Qarluqlar va O\u2018g\u2018uzlar davlati qaysi hududlar aholisining siyosiy hayotiga kuchli ta\u2019sir o\u2018tkazganligini aniqlang.  \nVariantlar:  \na) Movarounnahr, Sharqiy Turkiston, Afg\u2018oniston  \nb) Oltoy, Orolbo\u2018yi hududi, O\u2018rta Osiyo  \nc) Orolbo\u2018yi, Yettisuv, Movarounnahr  \nd) Movarounnahr, O\u2018rta harq, Old Osiyo  \n\nPromptni shunday yozing, to'g'ri javob variantini taxlil qila oldingiz.",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAPnaMUH0iT3CtNQ2CuIsPc5mozFrTMAAh71MRvCDSlKdRABDILrdJ4BAAMCAAN4AAM2BA"
+        },
+        "62": {
+            "user_id": 5143376517,
+            "savol": " ",
+            "full_name": "BroAZIK",
+            "photo": "AgACAgIAAxkBAAPwaMUQwPjGyuGfCv9BofeAfnbophYAAjz1MRvCDSlK-eO1xO2plWABAAMCAAN4AAM2BA"
+        },
+        "63": {
+            "user_id": 5143376517,
+            "savol": " ",
+            "full_name": "BroAZIK",
+            "photo": null
+        },
+        "64": {
+            "user_id": 5143376517,
+            "savol": "variantlardan to'g'ri javobni tanla",
+            "full_name": "BroAZIK",
+            "photo": null
         }
     }
 }
