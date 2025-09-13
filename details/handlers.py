@@ -205,7 +205,7 @@ async def photo(update: Update, context):
         ai_text = vision_responser(text=f"user.{user_id} | {caption} | mode.{mode}")
 
         # ai_text = ai_request(text=f"user.{user_id} | {ocr_text} | {caption} | mode.{mode}")
-        await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=caption ,caption=caption, answer=ai_text)
+        await log_saver(user_id=user_id, full_name=update.effective_chat.full_name, text=caption ,caption=caption, answer=ai_text, rassm=rasm)
     
     else:
         await context.bot.send_chat_action(
